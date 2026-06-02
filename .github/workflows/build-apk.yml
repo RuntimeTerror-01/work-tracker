@@ -44,7 +44,7 @@ jobs:
 
       - name: Initialize Capacitor
         run: |
-          npx cap init "Waiter Tracker" "com.waitertracker.app" --web-dir=www
+          npx cap init "Work Days Tracker" "com.runtimeterror.worktrack" --web-dir=www
 
       - name: Add Android Native Platform
         run: |
@@ -90,6 +90,6 @@ jobs:
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: waiter-tracker-debug-apk
+          name: work-tracker-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7

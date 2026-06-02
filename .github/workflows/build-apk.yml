@@ -50,6 +50,12 @@ jobs:
         run: |
           npx cap add android
 
+      - name: Patch Kotlin Duplicate Class Conflict
+        run: |
+          # Append a resolution strategy to exclude the duplicate legacy Kotlin packages
+          echo -e "\nconfigurations.all {\n    resolutionStrategy {\n        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'\n        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'\n    }\n}" >> android/app/build.gradle
+          echo "Successfully patched app/build.gradle to resolve duplicate Kotlin classes"
+
       - name: Sync Web Code to Native Wrapper
         run: |
           npx cap sync

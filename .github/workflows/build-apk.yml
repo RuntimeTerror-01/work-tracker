@@ -1,0 +1,71 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions tab
+
+jobs:
+  build:
+    name: Build Android App Bundle / APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Prepare Workspace & Directories
+        run: |
+          # Ensure 'www' directory exists
+          mkdir -p www
+          # If index.html is in root, copy/move it to www folder
+          if [ -f "index.html" ]; then
+            cp index.html www/index.html
+          fi
+
+      - name: Install Capacitor & Platform
+        run: |
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Initialize Capacitor
+        run: |
+          npx cap init "Waiter Tracker" "com.waitertracker.app" --web-dir=www
+
+      - name: Add Android Native Platform
+        run: |
+          npx cap add android
+
+      - name: Sync Web Code to Native Wrapper
+        run: |
+          npx cap sync
+
+      - name: Set Execution Permissions for Gradle
+        run: |
+          chmod +x android/gradlew
+
+      - name: Build Debug APK with Gradle
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Upload Finished APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: waiter-tracker-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7

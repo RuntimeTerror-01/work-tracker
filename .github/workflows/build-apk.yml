@@ -44,7 +44,7 @@ jobs:
 
       - name: Initialize Capacitor
         run: |
-          npx cap init "Waiter Tracker" "com.waitertracker.app" --web-dir=www
+          npx cap init "Work Days Tracker" "com.worktracker.app" --web-dir=www
 
       - name: Add Android Native Platform
         run: |

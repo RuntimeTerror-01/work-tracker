@@ -44,7 +44,7 @@ jobs:
 
       - name: Initialize Capacitor
         run: |
-          npx cap init "Work Days Tracker" "com.worktracker.app" --web-dir=www
+          npx cap init "Waiter Tracker" "com.waitertracker.app" --web-dir=www
 
       - name: Add Android Native Platform
         run: |
@@ -55,6 +55,24 @@ jobs:
           # Append a resolution strategy to exclude the duplicate legacy Kotlin packages
           echo -e "\nconfigurations.all {\n    resolutionStrategy {\n        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'\n        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'\n    }\n}" >> android/app/build.gradle
           echo "Successfully patched app/build.gradle to resolve duplicate Kotlin classes"
+
+      - name: Generate App Icons
+        run: |
+          # Check if the user has provided a custom icon, otherwise generate a default dummy one so it doesn't crash
+          if [ ! -f "assets/icon-only.png" ] && [ ! -f "assets/icon.png" ]; then
+            echo "No custom icon detected. Creating a temporary default placeholder icon..."
+            mkdir -p assets
+            # Generate a 1024x1024 flat colored image using ImageMagick (pre-installed on Ubuntu runners)
+            convert -size 1024x1024 xc:#00f0ff -gravity center -pointsize 120 -fill black -draw "text 0,0 'W'" assets/icon-only.png
+            convert -size 1024x1024 xc:#05050a assets/icon-background.png
+          fi
+
+          # Install the Capacitor assets generation tool
+          npm install @capacitor/assets --save-dev
+
+          # Run the asset generation tool
+          npx capacitor-assets generate --android
+          echo "App icons generated successfully!"
 
       - name: Sync Web Code to Native Wrapper
         run: |
@@ -72,6 +90,6 @@ jobs:
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: work-tracker-debug-apk
+          name: waiter-tracker-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7

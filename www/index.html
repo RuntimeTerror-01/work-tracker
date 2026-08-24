@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Work Days Tracker</title>
     <style>
-        /* External fonts fall back cleanly to system sans-serif if offline */
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap');
 
         *, *::before, *::after {
@@ -15,8 +14,8 @@
         }
 
         body {
-            background-color: #05050a; /* Cyberpunk deep void black */
-            color: #00f0ff; /* Neon Cyan */
+            background-color: #05050a;
+            color: #00f0ff;
             font-family: 'Orbitron', 'Share Tech Mono', 'Segoe UI', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -24,8 +23,39 @@
             align-items: center;
             padding: 40px 16px;
         }
-        
-        /* Dashboard & Setup Wrappers */
+
+        .language-switcher {
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            display: flex;
+            gap: 4px;
+            z-index: 2000;
+        }
+
+        .language-btn {
+            background-color: rgba(9, 9, 11, 0.9);
+            color: #71717a;
+            border: 1px solid #27272a;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .language-btn:hover {
+            color: #22d3ee;
+            border-color: #22d3ee;
+        }
+
+        .language-btn.active {
+            color: #22d3ee;
+            border-color: #22d3ee;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+        }
+
         #setup-screen {
             display: flex;
             flex-direction: column;
@@ -37,18 +67,17 @@
         }
 
         #main-dashboard {
-            display: none; /* Hidden until configured */
+            display: none;
             flex-direction: column;
             align-items: center;
             width: 100%;
         }
 
-        /* Setup Form Styles */
         .setup-card {
             background-color: rgba(9, 9, 11, 0.9);
             padding: 32px 24px;
             border-radius: 16px;
-            border: 1px solid rgba(217, 70, 239, 0.4); /* Magenta tint */
+            border: 1px solid rgba(217, 70, 239, 0.4);
             box-shadow: 0 0 25px rgba(217, 70, 239, 0.15);
             width: 100%;
         }
@@ -93,7 +122,6 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
-        /* Specifically styling date picker icons for dark mode */
         ::-webkit-calendar-picker-indicator {
             filter: invert(1) hue-rotate(180deg) brightness(1.5);
             cursor: pointer;
@@ -121,13 +149,12 @@
             box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
         }
 
-        /* Dashboard Container Card */
         .dashboard-header {
             text-align: center;
             margin-bottom: 32px;
             width: 100%;
-            max-width: 672px; /* Equates to max-w-2xl */
-            background-color: rgba(9, 9, 11, 0.8); /* bg-zinc-950/80 */
+            max-width: 672px;
+            background-color: rgba(9, 9, 11, 0.8);
             padding: 24px;
             border-radius: 16px;
             border: 1px solid rgba(0, 240, 255, 0.3);
@@ -135,7 +162,6 @@
             position: relative;
         }
 
-        /* Updated configuration button: Only a gear icon, shifted elegantly right */
         .edit-btn {
             position: absolute;
             top: 14px;
@@ -190,27 +216,28 @@
             border-right: 1px solid #27272a;
         }
 
-        /* Stat Numbers and Glows */
         .num-large {
             font-size: 2.25rem;
             font-weight: 800;
         }
+
         #count-passed {
             color: #22d3ee;
             filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
         }
+
         #today-progress {
             font-size: 1.5rem;
             font-weight: 700;
             color: #d946ef;
             filter: drop-shadow(0 0 8px rgba(255, 0, 85, 0.5));
         }
+
         #count-left {
             color: #52525b;
             filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.05));
         }
 
-        /* Label details */
         .label-main {
             font-size: 0.875rem;
             color: #71717a;
@@ -219,6 +246,7 @@
             letter-spacing: 0.05em;
             font-weight: 600;
         }
+
         .label-sub {
             font-size: 0.75rem;
             color: #71717a;
@@ -226,7 +254,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-        
+
         #current-date-display {
             font-size: 0.75rem;
             color: #22d3ee;
@@ -240,10 +268,15 @@
             color: #71717a;
             font-weight: 500;
         }
-        .text-cyan { color: #22d3ee; }
-        .text-fuchsia { color: #e879f9; }
 
-        /* Progress Bar Module Styles */
+        .text-cyan {
+            color: #22d3ee;
+        }
+
+        .text-fuchsia {
+            color: #e879f9;
+        }
+
         .progress-container {
             width: 100%;
             max-width: 672px;
@@ -287,7 +320,6 @@
             transition: width 0.4s ease-out;
         }
 
-        /* Matrix Section Header Layout Styling */
         .matrix-header {
             width: 100%;
             max-width: 672px;
@@ -309,7 +341,6 @@
             filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.4));
         }
 
-        /* The container for all our day tubes */
         .tubes-grid {
             display: flex;
             flex-wrap: wrap;
@@ -320,7 +351,6 @@
             padding: 4px 1rem 1rem 1rem;
         }
 
-        /* Base styles for a moderately small vertical oval tube */
         .tube {
             width: 14px;
             height: 38px;
@@ -381,7 +411,6 @@
             pointer-events: none;
         }
 
-        /* Earnings Section Styles */
         .earnings-container {
             width: 100%;
             max-width: 672px;
@@ -431,7 +460,6 @@
             filter: drop-shadow(0 0 5px rgba(232, 121, 249, 0.3));
         }
 
-        /* Pop-up Box / Modal Overlay Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -527,88 +555,158 @@
             display: inline-block;
             background-color: rgba(255, 255, 255, 0.05);
         }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 40px 10px 24px;
+            }
+
+            .dashboard-title {
+                font-size: 1.45rem;
+            }
+
+            .num-large {
+                font-size: 1.8rem;
+            }
+
+            #today-progress {
+                font-size: 1.2rem;
+            }
+
+            .stat-col.center-divider {
+                padding: 0 8px;
+            }
+
+            .label-main {
+                font-size: 0.7rem;
+            }
+
+            .earnings-container {
+                padding: 16px 10px;
+            }
+
+            .earning-item {
+                min-width: 100px;
+            }
+        }
     </style>
 </head>
 <body>
 
+    <div class="language-switcher" aria-label="Language selection">
+        <button id="language-en" class="language-btn active" type="button">EN</button>
+        <button id="language-ne" class="language-btn" type="button">ने</button>
+    </div>
+
     <div id="setup-screen">
         <div class="setup-card">
-            <h1 class="setup-title">Initialize Matrix</h1>
+            <h1 class="setup-title" data-i18n="initializeTracker">Start Work Tracker</h1>
+
             <form id="setup-form">
                 <div class="input-group">
-                    <label for="input-start-date">Contract Start Date</label>
+                    <label for="input-start-date" data-i18n="contractStartDate">Contract Start Date</label>
                     <input type="date" id="input-start-date" class="input-field" required>
                 </div>
+
                 <div class="input-group">
-                    <label for="input-end-date">Contract End Date</label>
+                    <label for="input-end-date" data-i18n="contractEndDate">Contract End Date</label>
                     <input type="date" id="input-end-date" class="input-field" required>
                 </div>
+
                 <div class="input-group">
-                    <label for="input-daily-rate">Daily Rate (Rs.)</label>
-                    <input type="number" id="input-daily-rate" class="input-field" placeholder="e.g. 400" min="1" step="any" required>
+                    <label for="input-daily-rate" data-i18n="dailyRate">Daily Rate (Rs.)</label>
+                    <input
+                        type="number"
+                        id="input-daily-rate"
+                        class="input-field"
+                        placeholder="e.g. 400"
+                        min="1"
+                        step="any"
+                        required
+                    >
                 </div>
-                <button type="submit" class="btn-neon">Start Tracking</button>
+
+                <button type="submit" class="btn-neon" data-i18n="startTracking">
+                    Start Tracking
+                </button>
             </form>
         </div>
     </div>
 
     <div id="main-dashboard">
         <div class="dashboard-header">
-            <button id="btn-edit-config" class="edit-btn" title="Configuration">⚙️</button>
-            <h1 class="dashboard-title">Work Days Tracker</h1>
-            
+            <button
+                id="btn-edit-config"
+                class="edit-btn"
+                title="Configuration"
+                aria-label="Edit configuration"
+            >⚙️</button>
+
+            <h1 class="dashboard-title" data-i18n="workDaysTracker">
+                Work Days Tracker
+            </h1>
+
             <div class="stats-row">
                 <div class="stat-col">
                     <span class="num-large" id="count-passed">0</span>
-                    <span class="label-main">Days Passed</span>
+                    <span class="label-main" data-i18n="daysPassed">Days Passed</span>
                 </div>
 
                 <div class="stat-col center-divider">
                     <span id="today-progress">0%</span>
-                    <span class="label-sub">Today's Progress</span>
+                    <span class="label-sub" data-i18n="todaysProgress">Today's Progress</span>
                     <span id="current-date-display">...</span>
                 </div>
 
                 <div class="stat-col">
                     <span class="num-large" id="count-left">0</span>
-                    <span class="label-main">Days Left</span>
+                    <span class="label-main" data-i18n="daysLeft">Days Left</span>
                 </div>
             </div>
-            
+
             <div class="contract-info">
-                Contract: <span id="contract-start-display" class="text-cyan">--</span> to <span id="contract-end-display" class="text-cyan">--</span> (<span id="total-days" class="text-fuchsia">0</span> Days)
+                <span data-i18n="contract">Contract</span>:
+                <span id="contract-start-display" class="text-cyan">--</span>
+                <span data-i18n="to">to</span>
+                <span id="contract-end-display" class="text-cyan">--</span>
+                (<span id="total-days" class="text-fuchsia">0</span>
+                <span data-i18n="days">Days</span>)
             </div>
         </div>
 
         <div class="progress-container">
             <div class="progress-labels">
-                <span>Overall Contract Progress</span>
+                <span data-i18n="overallContractProgress">Overall Contract Progress</span>
                 <span id="overall-progress-text">0.00%</span>
             </div>
+
             <div class="progress-track">
                 <div id="overall-progress-bar" class="progress-fill"></div>
             </div>
         </div>
 
         <div class="matrix-header">
-            <h2 class="matrix-title">Contract Countdown Matrix</h2>
+            <h2 class="matrix-title" data-i18n="contractCountdown">
+                Contract Countdown
+            </h2>
         </div>
 
-        <div id="tubes-container" class="tubes-grid">
-        </div>
+        <div id="tubes-container" class="tubes-grid"></div>
 
         <div class="earnings-container">
             <div class="earnings-row">
                 <div class="earning-item">
-                    <span class="earning-label">Total to Earn</span>
+                    <span class="earning-label" data-i18n="totalToEarn">Total to Earn</span>
                     <span class="earning-value" id="total-cash">Rs. 0</span>
                 </div>
+
                 <div class="earning-item">
-                    <span class="earning-label">Earned Till Today</span>
+                    <span class="earning-label" data-i18n="earnedTillToday">Earned Till Today</span>
                     <span class="earning-value text-fuchsia" id="earned-cash">Rs. 0.00</span>
                 </div>
+
                 <div class="earning-item">
-                    <span class="earning-label">Left to Earn</span>
+                    <span class="earning-label" data-i18n="leftToEarn">Left to Earn</span>
                     <span class="earning-value" id="left-cash">Rs. 0.00</span>
                 </div>
             </div>
@@ -618,7 +716,14 @@
     <div id="modal-overlay" class="modal-overlay">
         <div id="modal-box" class="modal-box">
             <span id="modal-daily-rate" class="modal-daily-rate">--</span>
-            <button id="modal-close" class="modal-close-btn">&times;</button>
+
+            <button
+                id="modal-close"
+                class="modal-close-btn"
+                type="button"
+                aria-label="Close"
+            >&times;</button>
+
             <div id="modal-date" class="modal-date">--- --</div>
             <div id="modal-day" class="modal-day">---------</div>
             <div id="modal-status" class="modal-status-badge">Unknown</div>
@@ -627,57 +732,275 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Global State Variables
-            let startDate, endDate, dailyRate;
+            let startDate;
+            let endDate;
+            let dailyRate;
             let dates = [];
             let dashboardInterval = null;
+            let currentLanguage = localStorage.getItem('workTrackerLanguage') || 'en';
 
-            // DOM Elements
+            const translations = {
+                en: {
+                    initializeTracker: "Start Work Tracker",
+                    contractStartDate: "Contract Start Date",
+                    contractEndDate: "Contract End Date",
+                    dailyRate: "Daily Rate (Rs.)",
+                    startTracking: "Start Tracking",
+                    workDaysTracker: "Work Days Tracker",
+                    daysPassed: "Days Passed",
+                    todaysProgress: "Today's Progress",
+                    daysLeft: "Days Left",
+                    contract: "Contract",
+                    to: "to",
+                    days: "Days",
+                    overallContractProgress: "Overall Contract Progress",
+                    contractCountdown: "Contract Countdown",
+                    totalToEarn: "Total to Earn",
+                    earnedTillToday: "Earned Till Today",
+                    leftToEarn: "Left to Earn",
+                    configuration: "Configuration",
+                    close: "Close",
+                    passed: "Passed",
+                    left: "Left",
+                    today: "Today",
+                    invalidDates: "Please enter valid dates.",
+                    invalidRate: "Daily rate must be greater than 0.",
+                    startAfterEnd: "Start date cannot be after end date."
+                },
+                ne: {
+                    initializeTracker: "काम ट्र्याकर सुरु गर्नुहोस्",
+                    contractStartDate: "काम सुरु हुने मिति",
+                    contractEndDate: "काम सकिने मिति",
+                    dailyRate: "दैनिक पारिश्रमिक (रु.)",
+                    startTracking: "ट्र्याकिङ सुरु गर्नुहोस्",
+                    workDaysTracker: "कामको दिन ट्र्याकर",
+                    daysPassed: "बितेका दिन",
+                    todaysProgress: "आजको प्रगति",
+                    daysLeft: "बाँकी दिन",
+                    contract: "कामको अवधि",
+                    to: "देखि",
+                    days: "दिन",
+                    overallContractProgress: "समग्र कामको प्रगति",
+                    contractCountdown: "कामको बाँकी दिन",
+                    totalToEarn: "कुल कमाइ",
+                    earnedTillToday: "आजसम्मको कमाइ",
+                    leftToEarn: "बाँकी कमाइ",
+                    configuration: "सेटिङ",
+                    close: "बन्द गर्नुहोस्",
+                    passed: "बितिसकेको",
+                    left: "बाँकी",
+                    today: "आज",
+                    invalidDates: "कृपया सही मिति राख्नुहोस्।",
+                    invalidRate: "दैनिक पारिश्रमिक ० भन्दा बढी हुनुपर्छ।",
+                    startAfterEnd: "सुरु हुने मिति सकिने मितिभन्दा पछि हुन सक्दैन।"
+                }
+            };
+
             const setupScreen = document.getElementById('setup-screen');
             const mainDashboard = document.getElementById('main-dashboard');
             const setupForm = document.getElementById('setup-form');
             const editBtn = document.getElementById('btn-edit-config');
             const container = document.getElementById('tubes-container');
 
-            // Modal Setup
             const modalOverlay = document.getElementById('modal-overlay');
             const modalBox = document.getElementById('modal-box');
             const modalClose = document.getElementById('modal-close');
-            
-            const closeModal = () => modalOverlay.classList.remove('active');
-            modalClose.addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) closeModal();
-            });
 
-            // Date Formatter helper
-            const formatDate = (date) => {
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const languageEn = document.getElementById('language-en');
+            const languageNe = document.getElementById('language-ne');
+
+            const getText = (key) => {
+                return translations[currentLanguage][key] || translations.en[key] || key;
             };
 
-            // Check Local Storage on Load
-            const savedConfig = localStorage.getItem('waiterTrackerConfig');
-            if (savedConfig) {
-                const config = JSON.parse(savedConfig);
-                document.getElementById('input-start-date').value = config.start;
-                document.getElementById('input-end-date').value = config.end;
-                document.getElementById('input-daily-rate').value = config.rate;
-                initializeDashboard(config.start, config.end, config.rate);
-            }
+            const updateLanguageButtons = () => {
+                languageEn.classList.toggle('active', currentLanguage === 'en');
+                languageNe.classList.toggle('active', currentLanguage === 'ne');
+            };
 
-            // Handle Setup Form Submission
-            setupForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const startStr = document.getElementById('input-start-date').value;
-                const endStr = document.getElementById('input-end-date').value;
-                const rateVal = parseFloat(document.getElementById('input-daily-rate').value);
+            const updateInterfaceLanguage = () => {
+                document.documentElement.lang = currentLanguage === 'ne' ? 'ne' : 'en';
 
-                if (new Date(startStr) > new Date(endStr)) {
-                    alert("Start date cannot be after end date!");
+                document.querySelectorAll('[data-i18n]').forEach((element) => {
+                    const key = element.getAttribute('data-i18n');
+
+                    if (translations[currentLanguage][key]) {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                });
+
+                editBtn.title = getText('configuration');
+                editBtn.setAttribute('aria-label', getText('configuration'));
+                modalClose.setAttribute('aria-label', getText('close'));
+
+                updateLanguageButtons();
+
+                if (startDate && endDate && dates.length) {
+                    updateDashboard();
+                }
+            };
+
+            const setLanguage = (language) => {
+                if (!translations[language]) {
                     return;
                 }
 
-                // Save to local storage
+                currentLanguage = language;
+                localStorage.setItem('workTrackerLanguage', language);
+                updateInterfaceLanguage();
+            };
+
+            languageEn.addEventListener('click', () => {
+                setLanguage('en');
+            });
+
+            languageNe.addEventListener('click', () => {
+                setLanguage('ne');
+            });
+
+            const closeModal = () => {
+                modalOverlay.classList.remove('active');
+            };
+
+            modalClose.addEventListener('click', closeModal);
+
+            modalOverlay.addEventListener('click', (event) => {
+                if (event.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            const getDateLocale = () => {
+                return currentLanguage === 'ne' ? 'ne-NP' : 'en-US';
+            };
+
+            const formatDate = (date) => {
+                return date.toLocaleDateString(getDateLocale(), {
+                    month: 'short',
+                    day: 'numeric'
+                });
+            };
+
+            const formatFullDate = (date) => {
+                return date.toLocaleDateString(getDateLocale(), {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+            };
+
+            const formatWeekday = (date) => {
+                return date.toLocaleDateString(getDateLocale(), {
+                    weekday: 'long'
+                });
+            };
+
+            const getLocalDate = (dateString, endOfDay = false) => {
+                const parts = dateString.split('-').map(Number);
+
+                if (parts.length !== 3 || parts.some(Number.isNaN)) {
+                    return null;
+                }
+
+                const [year, month, day] = parts;
+
+                return endOfDay
+                    ? new Date(year, month - 1, day, 23, 59, 59, 999)
+                    : new Date(year, month - 1, day, 0, 0, 0, 0);
+            };
+
+            const isValidDateInput = (dateString) => {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+                    return false;
+                }
+
+                const date = getLocalDate(dateString);
+
+                if (!date || Number.isNaN(date.getTime())) {
+                    return false;
+                }
+
+                const [year, month, day] = dateString.split('-').map(Number);
+
+                return (
+                    date.getFullYear() === year &&
+                    date.getMonth() === month - 1 &&
+                    date.getDate() === day
+                );
+            };
+
+            const loadSavedConfiguration = () => {
+                const savedConfig = localStorage.getItem('waiterTrackerConfig');
+
+                if (!savedConfig) {
+                    return;
+                }
+
+                try {
+                    const config = JSON.parse(savedConfig);
+
+                    if (
+                        !config ||
+                        typeof config.start !== 'string' ||
+                        typeof config.end !== 'string' ||
+                        !Number.isFinite(Number(config.rate)) ||
+                        Number(config.rate) <= 0 ||
+                        !isValidDateInput(config.start) ||
+                        !isValidDateInput(config.end)
+                    ) {
+                        localStorage.removeItem('waiterTrackerConfig');
+                        return;
+                    }
+
+                    const savedStart = getLocalDate(config.start);
+                    const savedEnd = getLocalDate(config.end, true);
+
+                    if (savedStart > savedEnd) {
+                        localStorage.removeItem('waiterTrackerConfig');
+                        return;
+                    }
+
+                    document.getElementById('input-start-date').value = config.start;
+                    document.getElementById('input-end-date').value = config.end;
+                    document.getElementById('input-daily-rate').value = config.rate;
+
+                    initializeDashboard(
+                        config.start,
+                        config.end,
+                        Number(config.rate)
+                    );
+                } catch {
+                    localStorage.removeItem('waiterTrackerConfig');
+                }
+            };
+
+            setupForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const startStr = document.getElementById('input-start-date').value;
+                const endStr = document.getElementById('input-end-date').value;
+                const rateVal = parseFloat(
+                    document.getElementById('input-daily-rate').value
+                );
+
+                if (!isValidDateInput(startStr) || !isValidDateInput(endStr)) {
+                    alert(getText('invalidDates'));
+                    return;
+                }
+
+                if (!Number.isFinite(rateVal) || rateVal <= 0) {
+                    alert(getText('invalidRate'));
+                    return;
+                }
+
+                const selectedStartDate = getLocalDate(startStr);
+                const selectedEndDate = getLocalDate(endStr, true);
+
+                if (selectedStartDate > selectedEndDate) {
+                    alert(getText('startAfterEnd'));
+                    return;
+                }
+
                 localStorage.setItem('waiterTrackerConfig', JSON.stringify({
                     start: startStr,
                     end: endStr,
@@ -687,165 +1010,302 @@
                 initializeDashboard(startStr, endStr, rateVal);
             });
 
-            // Handle Edit Button
             editBtn.addEventListener('click', () => {
-                if(dashboardInterval) clearInterval(dashboardInterval);
+                if (dashboardInterval) {
+                    clearInterval(dashboardInterval);
+                    dashboardInterval = null;
+                }
+
+                closeModal();
                 mainDashboard.style.display = 'none';
                 setupScreen.style.display = 'flex';
             });
 
             function initializeDashboard(startStr, endStr, rate) {
-                // Parse dates manually to avoid timezone shift issues (ensure local midnight)
-                const [sYear, sMonth, sDay] = startStr.split('-');
-                startDate = new Date(sYear, sMonth - 1, sDay, 0, 0, 0);
-                
-                const [eYear, eMonth, eDay] = endStr.split('-');
-                endDate = new Date(eYear, eMonth - 1, eDay, 23, 59, 59);
-                
-                dailyRate = rate;
+                const parsedStartDate = getLocalDate(startStr);
+                const parsedEndDate = getLocalDate(endStr, true);
 
-                // Update UI Labels
-                document.getElementById('contract-start-display').innerText = formatDate(startDate);
-                document.getElementById('contract-end-display').innerText = formatDate(endDate);
-                document.getElementById('modal-daily-rate').innerHTML = `&#43; Rs. ${dailyRate.toLocaleString('en-IN')}`;
-
-                // Generate Date Array
-                dates = [];
-                let d = new Date(startDate);
-                while (d <= endDate) {
-                    dates.push(new Date(d));
-                    d.setDate(d.getDate() + 1);
+                if (
+                    !parsedStartDate ||
+                    !parsedEndDate ||
+                    parsedStartDate > parsedEndDate
+                ) {
+                    return;
                 }
+
+                startDate = parsedStartDate;
+                endDate = parsedEndDate;
+                dailyRate = Number(rate);
+
+                document.getElementById('contract-start-display').innerText =
+                    formatDate(startDate);
+
+                document.getElementById('contract-end-display').innerText =
+                    formatDate(endDate);
+
+                document.getElementById('modal-daily-rate').innerHTML =
+                    `&#43; Rs. ${dailyRate.toLocaleString(
+                        currentLanguage === 'ne' ? 'ne-NP' : 'en-IN'
+                    )}`;
+
+                dates = [];
+                let currentDate = new Date(startDate);
+
+                while (currentDate <= endDate) {
+                    dates.push(new Date(currentDate));
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
                 document.getElementById('total-days').innerText = dates.length;
 
-                // Clear and build matrix tubes
                 container.innerHTML = '';
+
                 dates.forEach((date, index) => {
                     const tube = document.createElement('div');
+
                     tube.id = `tube-${index}`;
                     tube.className = 'tube tube-left';
-                    tube.setAttribute('data-title', formatDate(date));
-                    
+                    tube.setAttribute(
+                        'data-title',
+                        `${formatDate(date)} (${getText('left')})`
+                    );
+
                     const fill = document.createElement('div');
+
                     fill.id = `fill-${index}`;
                     fill.className = 'tube-fill';
                     fill.style.height = '0%';
-                    
+
                     tube.appendChild(fill);
                     container.appendChild(tube);
 
                     tube.addEventListener('click', () => {
-                        const fullDateStr = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                        const weekdayStr = date.toLocaleDateString('en-US', { weekday: 'long' });
+                        document.getElementById('modal-date').innerText =
+                            formatFullDate(date);
 
-                        document.getElementById('modal-date').innerText = fullDateStr;
-                        document.getElementById('modal-day').innerText = weekdayStr;
+                        document.getElementById('modal-day').innerText =
+                            formatWeekday(date);
 
                         const now = new Date();
-                        const startOfDay = new Date(date).setHours(0, 0, 0, 0);
-                        const endOfDay = new Date(date).setHours(23, 59, 59, 999);
 
-                        let statusText = "Left";
+                        const startOfDay = new Date(date);
+                        startOfDay.setHours(0, 0, 0, 0);
+
+                        const endOfDay = new Date(date);
+                        endOfDay.setHours(23, 59, 59, 999);
+
+                        let statusText = getText('left');
                         let statusColor = "#52525b";
 
                         if (now > endOfDay) {
-                            statusText = "Passed";
+                            statusText = getText('passed');
                             statusColor = "#22d3ee";
-                        } else if (now >= startOfDay && now <= endOfDay) {
-                            statusText = "Today";
+                        } else if (
+                            now >= startOfDay &&
+                            now <= endOfDay
+                        ) {
+                            statusText = getText('today');
                             statusColor = "#ff0055";
                         }
 
-                        const statusBadge = document.getElementById('modal-status');
+                        const statusBadge =
+                            document.getElementById('modal-status');
+
                         statusBadge.innerText = statusText;
                         statusBadge.style.color = statusColor;
+
                         modalBox.style.borderColor = statusColor;
-                        modalBox.style.boxShadow = `0 0 25px ${statusColor}40`;
-                        
+                        modalBox.style.boxShadow =
+                            `0 0 25px ${statusColor}40`;
+
                         modalOverlay.classList.add('active');
                     });
                 });
 
-                // Switch screens
                 setupScreen.style.display = 'none';
                 mainDashboard.style.display = 'flex';
 
-                // Start loop
-                if(dashboardInterval) clearInterval(dashboardInterval);
+                if (dashboardInterval) {
+                    clearInterval(dashboardInterval);
+                }
+
                 updateDashboard();
                 dashboardInterval = setInterval(updateDashboard, 1000);
             }
 
             function updateDashboard() {
+                if (!startDate || !endDate || !dates.length) {
+                    return;
+                }
+
                 const now = new Date();
+
                 let passedCount = 0;
                 let leftCount = 0;
                 let todayFraction = 0;
+                let todayFound = false;
 
-                document.getElementById('current-date-display').innerText = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                document.getElementById('current-date-display').innerText =
+                    now.toLocaleDateString(getDateLocale(), {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
 
-                // Overall progress
+                document.getElementById('modal-daily-rate').innerHTML =
+                    `&#43; Rs. ${dailyRate.toLocaleString(
+                        currentLanguage === 'ne' ? 'ne-NP' : 'en-IN'
+                    )}`;
+
                 const totalContractMs = endDate - startDate;
                 const currentContractMs = now - startDate;
-                let globalPercentage = (currentContractMs / totalContractMs) * 100;
-                globalPercentage = Math.max(0, Math.min(100, globalPercentage));
-                
-                document.getElementById('overall-progress-bar').style.width = `${globalPercentage}%`;
-                document.getElementById('overall-progress-text').innerText = `${globalPercentage.toFixed(2)}%`;
 
-                // Update individual tubes
+                let globalPercentage;
+
+                if (totalContractMs <= 0) {
+                    globalPercentage = now >= endDate ? 100 : 0;
+                } else {
+                    globalPercentage =
+                        (currentContractMs / totalContractMs) * 100;
+
+                    globalPercentage = Math.max(
+                        0,
+                        Math.min(100, globalPercentage)
+                    );
+                }
+
+                document.getElementById('overall-progress-bar').style.width =
+                    `${globalPercentage}%`;
+
+                document.getElementById('overall-progress-text').innerText =
+                    `${globalPercentage.toFixed(2)}%`;
+
+                document.getElementById('today-progress').innerText = '0%';
+
                 dates.forEach((date, index) => {
-                    const tube = document.getElementById(`tube-${index}`);
-                    const fill = document.getElementById(`fill-${index}`);
-                    
+                    const tube =
+                        document.getElementById(`tube-${index}`);
+
+                    const fill =
+                        document.getElementById(`fill-${index}`);
+
+                    if (!tube || !fill) {
+                        return;
+                    }
+
                     const startOfDay = new Date(date);
                     startOfDay.setHours(0, 0, 0, 0);
-                    
+
                     const endOfDay = new Date(date);
                     endOfDay.setHours(23, 59, 59, 999);
 
                     if (now > endOfDay) {
                         tube.className = 'tube tube-passed';
-                        tube.setAttribute('data-title', `${formatDate(date)} (Passed)`);
+
+                        tube.setAttribute(
+                            'data-title',
+                            `${formatDate(date)} (${getText('passed')})`
+                        );
+
                         fill.style.height = '100%';
                         passedCount++;
                     } else if (now < startOfDay) {
                         tube.className = 'tube tube-left';
-                        tube.setAttribute('data-title', `${formatDate(date)} (Left)`);
+
+                        tube.setAttribute(
+                            'data-title',
+                            `${formatDate(date)} (${getText('left')})`
+                        );
+
                         fill.style.height = '0%';
                         leftCount++;
                     } else {
                         tube.className = 'tube tube-current';
-                        tube.setAttribute('data-title', `${formatDate(date)} (Today)`);
-                        
+
+                        tube.setAttribute(
+                            'data-title',
+                            `${formatDate(date)} (${getText('today')})`
+                        );
+
                         const totalDayMs = endOfDay - startOfDay;
-                        const passedMs = now - startOfDay;
-                        const percentage = (passedMs / totalDayMs) * 100;
-                        todayFraction = passedMs / totalDayMs;
-                        
+
+                        const passedMs = Math.max(
+                            0,
+                            Math.min(
+                                totalDayMs,
+                                now - startOfDay
+                            )
+                        );
+
+                        const percentage =
+                            totalDayMs > 0
+                                ? (passedMs / totalDayMs) * 100
+                                : 100;
+
+                        todayFraction =
+                            totalDayMs > 0
+                                ? passedMs / totalDayMs
+                                : 1;
+
                         fill.style.height = `${percentage}%`;
-                        document.getElementById('today-progress').innerText = `${percentage.toFixed(1)}%`;
+
+                        document.getElementById('today-progress').innerText =
+                            `${percentage.toFixed(1)}%`;
+
+                        todayFound = true;
                     }
                 });
 
-                document.getElementById('count-passed').innerText = passedCount;
-                document.getElementById('count-left').innerText = leftCount;
+                if (!todayFound) {
+                    document.getElementById('today-progress').innerText =
+                        now < startDate ? '0%' : '100%';
+                }
 
-                // Earnings Logic
+                document.getElementById('count-passed').innerText =
+                    passedCount;
+
+                document.getElementById('count-left').innerText =
+                    leftCount;
+
                 const totalCash = dates.length * dailyRate;
-                
-                // If contract hasn't started yet, cap fraction at 0. If finished, cap at 1.
-                let effectiveFraction = 0;
-                if (now >= startDate && now <= endDate) { effectiveFraction = todayFraction; }
-                if (now > endDate) { effectiveFraction = 1; }
 
-                const earnedCash = (passedCount + effectiveFraction) * dailyRate;
+                let effectiveFraction = 0;
+
+                if (now >= startDate && now <= endDate) {
+                    effectiveFraction = todayFraction;
+                } else if (now > endDate) {
+                    effectiveFraction = 1;
+                }
+
+                const earnedCash =
+                    (passedCount + effectiveFraction) * dailyRate;
+
                 const leftCash = totalCash - earnedCash;
 
-                document.getElementById('total-cash').innerText = `Rs. ${totalCash.toLocaleString('en-IN')}`;
-                document.getElementById('earned-cash').innerText = `Rs. ${earnedCash.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('left-cash').innerText = `Rs. ${Math.max(0, leftCash).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                const numberLocale =
+                    currentLanguage === 'ne' ? 'ne-NP' : 'en-IN';
+
+                document.getElementById('total-cash').innerText =
+                    `Rs. ${totalCash.toLocaleString(numberLocale)}`;
+
+                document.getElementById('earned-cash').innerText =
+                    `Rs. ${earnedCash.toLocaleString(numberLocale, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}`;
+
+                document.getElementById('left-cash').innerText =
+                    `Rs. ${Math.max(0, leftCash).toLocaleString(
+                        numberLocale,
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    )}`;
             }
+
+            updateInterfaceLanguage();
+            loadSavedConfiguration();
         });
     </script>
 </body>
